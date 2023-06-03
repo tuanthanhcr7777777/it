@@ -1,9 +1,45 @@
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
+import { loginApi } from "../services/UserService"
+import { toast } from 'react-toastify'
+import { useNavigate } from "react-router-dom"
+import { UserContext } from "../context/UserContext"
 
 const Login = () => {
+    const navigate = useNavigate();
+    const { loginContext } = useContext(UserContext)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [isShowPassword, setIsShowPassword] = useState(false)
+
+    const [loadingApi, setLoadingApi] = useState(false)
+
+    // useEffect(() => {
+    //     let token = localStorage.getItem('token');
+    //     if (token) {
+    //         navigate('/')
+    //     }
+    // }, [])
+    
+    const handleLogin = async () => {
+        if(!email || !password) {
+            toast.error('Email or Password is required!')
+            return;
+        }
+        setLoadingApi(true)
+        let res = await loginApi(email, password)
+        if (res && res.token) {
+            loginContext(email, res.token)
+            navigate('/');
+        }else {
+            // Error
+            if(res && res.status === 400) {
+                toast.error(res.data.error)
+                alert('The account or password is incorrect, please check again !')
+            }
+        }
+        setLoadingApi(false)
+    }
 
     return (
         <>
@@ -18,14 +54,23 @@ const Login = () => {
                 />
                 <div className="input-2">
                     <input 
-                        type="password"
+                        type={isShowPassword === true ? 'text' :"password"}
                         placeholder="Password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                     />
-                    <i className="fa-solid fa-eye-slash"></i>
+                    <i className={isShowPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}
+                        onClick={() => setIsShowPassword(!isShowPassword)}
+                    ></i>
                 </div>
-                <button className={email && password ? 'active' : ''}>Login</button>
+                <button 
+                    className={email && password ? 'active' : ''}
+                    disabled={email && password ? false : true}
+                    onClick={() => handleLogin()}
+                >
+                    {loadingApi && <i class="fa-solid fa-sync fa-spin"></i>}
+                    Login
+                </button>
                 <div className="back">
                     Go back
                 </div>
