@@ -8,6 +8,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Login from './components/Login';
 import { useContext } from 'react';
 import { UserContext } from './context/UserContext';
+import NotFound from './components/NotFound';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path='/' element={<Home />}/>
           <Route path='/users' element={<TableUsers />}/>
           <Route path='/login' element={<Login />}/>
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </Container>
     </div>

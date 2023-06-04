@@ -14,9 +14,13 @@ code {
 
 .app-container {
   .add-new {
-    display: flex;
+    // display: flex;
     align-items: center;
     justify-content: space-between;
+
+    // button {
+    //   justify-content: flex-end;
+    // }
   }
 
   .login-container {

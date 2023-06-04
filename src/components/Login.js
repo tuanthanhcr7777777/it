@@ -27,7 +27,7 @@ const Login = () => {
             return;
         }
         setLoadingApi(true)
-        let res = await loginApi(email, password)
+        let res = await loginApi(email.trim(), password)
         if (res && res.token) {
             loginContext(email, res.token)
             navigate('/');
@@ -39,6 +39,12 @@ const Login = () => {
             }
         }
         setLoadingApi(false)
+    }
+
+    const handlePressEnter = (event) => {
+        if (event && event.key === 'Enter') {
+            handleLogin()
+        }
     }
 
     return (
@@ -58,6 +64,7 @@ const Login = () => {
                         placeholder="Password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
+                        onKeyDown={(event) => handlePressEnter(event)}
                     />
                     <i className={isShowPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}
                         onClick={() => setIsShowPassword(!isShowPassword)}
@@ -68,7 +75,7 @@ const Login = () => {
                     disabled={email && password ? false : true}
                     onClick={() => handleLogin()}
                 >
-                    {loadingApi && <i class="fa-solid fa-sync fa-spin"></i>}
+                    {loadingApi && <i className="fa-solid fa-sync fa-spin"></i>}
                     Login
                 </button>
                 <div className="back">
